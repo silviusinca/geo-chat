@@ -5,12 +5,14 @@
 </template>
 
 <script>
+import firebase from 'firebase'
+
 export default {
   name: 'GMap',
   data () {
     return {
-      lat: 53,
-      lng: -2
+      lat: 46,
+      lng: 25
     }
   },
   methods: {
@@ -26,6 +28,8 @@ export default {
   },
   mounted() {
     this.renderMap()
+    console.log(firebase.auth().currentUser)
+
   }
 }
 </script>
