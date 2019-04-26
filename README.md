@@ -1,4 +1,4 @@
-# geo-chat
+# geo-chat https://geo-chat1.firebaseapp.com/
 
 > A Vue.js project
 
