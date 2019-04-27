@@ -26,6 +26,7 @@
 import slugify from 'slugify'
 import db from '@/firebase/init'
 import firebase from 'firebase'
+import functions from 'firebase/functions'
 
 export default {
   name: 'Signup',
@@ -47,14 +48,14 @@ export default {
           remove: /[$*_+~.()'"!\-:@]/g,
           lower: true
         })
-        let ref = db.collection('users').doc(this.slug)
-        ref.get().then(doc => {
-          if(doc.exists) this.feedback = 'This nickname is already used'
+        let checkNickname = firebase.functions().httpsCallable('checkNickname')
+        checkNickname({ slug: this.slug }).then(result => {
+          if(!results.data.unique) this.feedback = 'This nickname is already used'
           else {
             firebase.auth().createUserWithEmailAndPassword(this.email, this.password)
             .then(cred => {
               // console.log(cred.user)
-              ref.set({
+              db.collection('users').doc(this.slug).set({
                 nickname: this.nickname,
                 geolocation: null,
                 user_id: cred.user.uid
@@ -68,10 +69,7 @@ export default {
             this.feedback = 'This nickname is free to use'
           }
         })
-        console.log(this.slug)
-      } else {
-        this.feedback = 'You must enter all fields!'
-      }
+      } else this.feedback = 'You must enter all fields!'
     }
   }
 }
